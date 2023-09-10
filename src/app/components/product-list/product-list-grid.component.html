@@ -1,0 +1,93 @@
+<div class="main-content">
+    <div class="section-content section-content-p30">
+        <h4>Category: {{currentCategoryName}}</h4>
+        <hr>
+
+        <div class="container-fluid">
+            <div class="row">
+                <!-- loop over the collection of products -->
+                <div *ngFor="let tempProduct of products" class="col-md-3">
+                    <div class="product-box">
+
+                        <a routerLink="/products/{{tempProduct.id}}">
+                            <img src="{{tempProduct.imageUrl}}" class="img-responsive">
+                        </a>
+
+                        <a routerLink="/products/{{tempProduct.id}}">
+                            <h1>{{tempProduct.name}}</h1>
+                        </a>
+
+                        <div class="price">{{tempProduct.unitPrice | currency: "USD"}}</div>
+                        <button (click)="addToCart(tempProduct)" class="btn btn-primary btn-sm">Add to
+                            cart</button>
+                    </div>
+
+                </div>
+
+                <!--if no products found (Product[] is empty), then display message to user-->
+                <div *ngIf="products?.length == 0" class="alert alert-warning col-md-12" role="alert">No Products Found
+                </div>
+            </div>
+
+            <!--begin Footer-->
+            <div class="footer-pagination">
+                <div class="row">
+                    <div class="col-md-6"></div>
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="col-md-9" style="padding-left:30%;">
+                                <ngb-pagination [(page)]="thePageNumber" [pageSize]="thePageSize" [maxSize]="5"
+                                    [boundaryLinks]="true" [collectionSize]="theTotalElements"
+                                    (pageChange)="listProducts()">
+
+                                </ngb-pagination>
+                            </div>
+
+                            <div class="col-md-3 mt-2" style="text-align:right;">
+                                <span class="mr-2">Page Size</span>
+                                <select #myPageSelect (change)="updatePageSize(myPageSelect.value)">
+                                    <option selected="true">5</option>
+                                    <option value="2">2</option>
+                                    <option>10</option>
+                                    <option>20</option>
+                                    <option>50</option>
+                                </select>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!--end Footer-->
+
+        </div>
+    </div>
+</div>
+
+<!-- <table class="table">
+    <thead class="table-dark">
+        <tr>
+            <th></th>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Units In Stock</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        <tr *ngFor="let tempProduct of products">
+            <td class="align-middle ">
+                <img src="{{tempProduct.imageUrl}}" alt="product-image">
+            </td>
+            <td class="align-middle">{{tempProduct.name}}</td>
+            <td class="align-middle">{{tempProduct.unitPrice | currency: "USD"}}</td>
+            <td class="align-middle">{{tempProduct.unitsInStock}}</td>
+        </tr>
+    </tbody>
+</table> -->
+
+
+<!-- <p *ngFor="let tempProduct of products">
+    {{tempProduct.name}} : {{tempProduct.unitPrice | currency: "USD"}}
+</p> -->
