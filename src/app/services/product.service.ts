@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable, map } from 'rxjs';
 import { Product } from '../common/product';
 import { ProductCategory } from '../common/product-category';
+import { environment } from 'src/environments/environment.development';
 
 @Injectable({
   providedIn: 'root'
@@ -22,9 +23,9 @@ export class ProductService {
     return this.httpClient.get<GetResponseProducts>(searchUrl);
   }
 
-  private categoryUrl = 'http://localhost:8080/api/product-category';
+  private categoryUrl = environment.luv2shopApiUrl + '/product-category';
   
-  private baseUrl = 'http://localhost:8080/api/products';
+  private baseUrl = environment.luv2shopApiUrl + "/products";
 
   constructor(private httpClient: HttpClient) { }
 
@@ -49,6 +50,8 @@ export class ProductService {
   getProductListPaginate(thePage: number, thePageSize: number, theCategoryId: number): Observable<GetResponseProducts> {
     // build URL based on category id, page, and size
     const searchUrl: string = `${this.baseUrl}/search/findByCategoryId?id=${theCategoryId}&page=${thePage}&size=${thePageSize}`;
+    console.log(`get product list from ${searchUrl}`);
+    
     return this.httpClient.get<GetResponseProducts>(searchUrl);
   }
 }

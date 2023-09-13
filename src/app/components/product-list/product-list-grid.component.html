@@ -14,7 +14,9 @@
                         </a>
 
                         <a routerLink="/products/{{tempProduct.id}}">
-                            <h1>{{tempProduct.name}}</h1>
+                            <h1>{{(tempProduct.name.length > 20) ? (tempProduct.name | slice: 0:20) + '...' :
+                                tempProduct.name}}
+                            </h1>
                         </a>
 
                         <div class="price">{{tempProduct.unitPrice | currency: "USD"}}</div>
