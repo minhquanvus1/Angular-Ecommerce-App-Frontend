@@ -213,8 +213,11 @@ export class CheckoutComponent implements OnInit {
     purchase.orderItems = orderItems;
 
     // compute payment info
-    this.paymentInfo.amount = this.totalPrice * 100;
+    this.paymentInfo.amount = Math.round(this.totalPrice * 100);
     this.paymentInfo.currency = "USD";
+
+    console.log(`this.paymentInfo.amount: ${this.paymentInfo.amount}`);
+    
 
     /*
     // call REST API via CheckOutService
@@ -274,6 +277,7 @@ export class CheckoutComponent implements OnInit {
     this.cartService.cartItems = [];
     this.cartService.totalPrice.next(0);
     this.cartService.totalQuantity.next(0);
+    this.cartService.persistCartItems();
 
     // reset the form
     this.checkoutFormGroup.reset();
