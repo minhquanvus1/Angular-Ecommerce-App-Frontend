@@ -279,7 +279,7 @@
                 </div>
 
                 <!--Credit Card form group-->
-                <div formGroupName="CreditCard" class="form-area">
+                <!-- <div formGroupName="CreditCard" class="form-area">
                     <h3>Credit Card</h3>
                     <div class="row">
                         <div class="col-md-2"><label>Card Type:</label></div>
@@ -378,6 +378,19 @@
                         </div>
                     </div>
 
+
+                </div> -->
+
+                <!--Stripe elements Credit Card section-->
+                <div formGroupName="creditCard" class="form-area">
+                    <h3>Credit or Debit Card</h3>
+
+                    <div id="card-element">
+                        <!--Stripe element will be inserted here-->
+                    </div>
+
+                    <!--Used to display form error-->
+                    <div id="card-errors" class="displayError.textContent !=='' : 'alert alert-danger mt-1'"></div>
 
                 </div>
 
