@@ -212,6 +212,11 @@ export class CheckoutComponent implements OnInit {
     purchase.order = order;
     purchase.orderItems = orderItems;
 
+    // compute payment info
+    this.paymentInfo.amount = this.totalPrice * 100;
+    this.paymentInfo.currency = "USD";
+
+    /*
     // call REST API via CheckOutService
     this.checkoutService.placeOrder(purchase).subscribe(
       {
@@ -220,7 +225,44 @@ export class CheckoutComponent implements OnInit {
         error: err => {alert(`There was an error: ${err.message}`)}
       }
     );
+      */
 
+     // if valid form, then:
+     // -- create paymentintent
+     // -- confirm card payment
+     // -- place order
+
+     if(!this.checkoutFormGroup.invalid && this.displayError.textContent === '') {
+      this.checkoutService.createPaymentIntent(this.paymentInfo).subscribe(
+        (paymentIntentResponse) => {
+          this.stripe.confirmCardPayment(paymentIntentResponse.client_secret, {
+            payment_method: {
+              card: this.cardElement
+            }
+          }, {handleActions: false}).then((result: any) => {
+            if(result.error) {
+              // inform the customer of the error
+              alert(`There was an error: ${result.error.message}`);
+            } else {
+              // call REST API via checkoutService
+              this.checkoutService.placeOrder(purchase).subscribe({
+                next: (response: any) => {
+                  alert(`Your order has been received\nOrder Tracking Number: ${response.orderTrackingNumber}`);
+                  // reset cart
+                  this.resetCart();
+                },
+                error: (err: any) => {
+                  alert(`There was an error: ${err.message}`);
+                }
+              });
+            }
+          });
+        }
+      );
+     } else {
+      this.checkoutFormGroup.markAllAsTouched();
+      return;
+     }
     console.log(this.checkoutFormGroup.get('Customer')!.value);
     console.log(`The email address is ${this.checkoutFormGroup.get("Customer")!.value.email}`);
     console.log(`Shipping Address Country Name is: ${this.checkoutFormGroup.get("ShippingAddress")!.value.country.name}`);
