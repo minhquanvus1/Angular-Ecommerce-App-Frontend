@@ -44,6 +44,8 @@ export class CheckoutComponent implements OnInit {
   cardElement: any;
   displayError: any = '';
 
+  isDisabled: boolean = false;
+
   constructor(private formBuilder: FormBuilder, private cartService: CartService, private luv2ShopFormService: Luv2ShopFormService, private checkoutService: CheckoutService, private router: Router) {}
   ngOnInit(): void {
 
@@ -235,17 +237,31 @@ export class CheckoutComponent implements OnInit {
      // -- confirm card payment
      // -- place order
 
+     this.isDisabled = true;
+
      if(!this.checkoutFormGroup.invalid && this.displayError.textContent === '') {
       this.checkoutService.createPaymentIntent(this.paymentInfo).subscribe(
         (paymentIntentResponse) => {
           this.stripe.confirmCardPayment(paymentIntentResponse.client_secret, {
             payment_method: {
-              card: this.cardElement
+              card: this.cardElement,
+              billing_details: {
+                email: purchase.customer.email,
+                name: `${purchase.customer.firstName} ${purchase.customer.lastName}`,
+                address: {
+                  line1: purchase.billingAddress.street,
+                  city: purchase.billingAddress.city,
+                  state: purchase.billingAddress.state,
+                  postal_code: purchase.billingAddress.zipCode,
+                  country: this.billingAddressCountry?.value.code
+                }
+              }
             }
           }, {handleActions: false}).then((result: any) => {
             if(result.error) {
               // inform the customer of the error
               alert(`There was an error: ${result.error.message}`);
+              this.isDisabled = false;
             } else {
               // call REST API via checkoutService
               this.checkoutService.placeOrder(purchase).subscribe({
@@ -253,9 +269,11 @@ export class CheckoutComponent implements OnInit {
                   alert(`Your order has been received\nOrder Tracking Number: ${response.orderTrackingNumber}`);
                   // reset cart
                   this.resetCart();
+                  this.isDisabled = false;
                 },
                 error: (err: any) => {
                   alert(`There was an error: ${err.message}`);
+                  this.isDisabled = false;
                 }
               });
             }
